@@ -53,7 +53,7 @@ fi
 source "$ENV_FILE"
 
 # ── Python MCP server deps ────────────────────────────────────────────────────
-pip install --quiet mcp uvicorn starlette httpx python-dotenv 2>/dev/null || pip3 install --quiet mcp uvicorn starlette httpx python-dotenv 2>/dev/null || true
+pip3 install --quiet mcp uvicorn starlette httpx python-dotenv 2>/dev/null || python3 -m pip install --quiet mcp uvicorn starlette httpx python-dotenv 2>/dev/null || true
 echo "✓ Python packages installed"
 
 # ── Low-level MCP call helper ─────────────────────────────────────────────────
@@ -487,7 +487,7 @@ echo "════════════════════════�
 echo "  Setup complete!"
 echo ""
 echo "  1. Start the MCP server in a separate terminal:"
-echo "     python mcp_github.py"
+echo "     python3 mcp_github.py"
 echo ""
 echo "  2. Launch opencode:"
 echo "     opencode"
