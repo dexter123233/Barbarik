@@ -1,0 +1,13 @@
+{
+  "agents": [
+    {
+      "agent_id": "69ec948e5eeacfdf45ab1faa",
+      "name": "AI Chat Assistant",
+      "node_id": "chat_assistant_agent",
+      "model": "gpt-4.1",
+      "provider": "openai"
+    }
+  ],
+  "rag_ids": [],
+  "schedules": []
+}

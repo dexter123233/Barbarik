@@ -1,0 +1,29 @@
+{
+  "nodes": [
+    {"id": "input_node", "type": "Input", "label": "User Query", "nodeCategory": "input"},
+    {"id": "chat_assistant_agent", "type": "Agent", "label": "AI Chat Assistant", "nodeCategory": "agent"},
+    {"id": "output_node", "type": "Output", "label": "Assistant Response", "nodeCategory": "end"}
+  ],
+  "edges": [
+    {"source": "input_node", "target": "chat_assistant_agent"},
+    {"source": "chat_assistant_agent", "target": "output_node"}
+  ],
+  "agents": [
+    {
+      "node_id": "chat_assistant_agent",
+      "agent_id": "69ec948e5eeacfdf45ab1faa",
+      "name": "AI Chat Assistant",
+      "description": "A versatile AI chat assistant that helps users with questions, writing, analysis, brainstorming, and general conversation",
+      "model": "gpt-4.1",
+      "provider": "openai",
+      "temperature": 0.7,
+      "top_p": 0.9,
+      "agent_type": "json",
+      "capabilities": {
+        "image_output": false,
+        "voice": false,
+        "file_output": false
+      }
+    }
+  ]
+}
