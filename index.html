@@ -3,44 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mcp-github Server</title>
+    <title>mcp-github | GitHub MCP Server</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; color: #c9d1d9; min-height: 100vh; }
-        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
         h1 { color: #58a6ff; font-size: 2.5rem; margin-bottom: 10px; }
         .subtitle { color: #8b949e; font-size: 1.2rem; margin-bottom: 40px; }
         .card { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 24px; margin-bottom: 20px; }
         .card h2 { color: #58a6ff; margin-bottom: 16px; font-size: 1.3rem; }
         .endpoint { display: flex; align-items: center; padding: 12px; background: #0d1117; border-radius: 4px; margin: 8px 0; font-family: monospace; }
-        .method { background: #238636; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; margin-right: 12px; font-weight: bold; }
-        .method.post { background: #1f6feb; }
+        .method { color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; margin-right: 12px; font-weight: bold; min-width: 60px; text-align: center; }
         .method.get { background: #238636; }
-        .tool { background: #1f6feb; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; margin-right: 12px; }
+        .method.post { background: #1f6feb; }
         code { color: #f0883e; }
-        .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
-        .tool-card { background: #0d1117; padding: 16px; border-radius: 4px; }
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+        .tool-card { background: #0d1117; padding: 16px; border-radius: 4px; border: 1px solid #30363d; }
         .tool-card h3 { color: #c9d1d9; font-size: 1rem; margin-bottom: 8px; }
-        .tool-card p { color: #8b949e; font-size: 0.9rem; }
-        .status { display: inline-flex; align-items: center; gap: 8px; background: #238636; color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; }
-        .status::before { content: ''; width: 8px; height: 8px; background: #3fb950; border-radius: 50%; }
+        .tool-card p { color: #8b949e; font-size: 0.85rem; }
+        .status { display: inline-flex; align-items: center; gap: 8px; background: #238636; color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }
+        .status::before { content: ''; width: 8px; height: 8px; background: #3fb950; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .badge { background: #1f6feb; color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; margin-left: 8px; }
+        pre { background: #0d1117; padding: 16px; border-radius: 4px; overflow-x: auto; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.9rem; line-height: 1.6; }
+        .prompt-section { background: linear-gradient(135deg, #161b22 0%, #1f2937 100%); border: 1px solid #374151; }
+        .prompt-box { background: #0d1117; padding: 16px; border-radius: 4px; margin: 12px 0; border-left: 3px solid #1f6feb; }
+        .prompt-box h4 { color: #58a6ff; margin-bottom: 8px; font-size: 0.95rem; }
+        .prompt-box code { display: block; background: #161b22; padding: 12px; border-radius: 4px; font-size: 0.85rem; white-space: pre-wrap; }
         footer { text-align: center; color: #8b949e; margin-top: 60px; padding-top: 20px; border-top: 1px solid #30363d; }
         a { color: #58a6ff; text-decoration: none; }
         a:hover { text-decoration: underline; }
+        .copy-btn { background: #30363d; color: #c9d1d9; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+        .copy-btn:hover { background: #484f58; }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>mcp-github</h1>
-        <p class="subtitle">MCP Server for GitHub API Integration</p>
+        <h1>mcp-github <span class="badge">MCP Server</span></h1>
+        <p class="subtitle">GitHub API Operations for Lyzr, Claude, and AI Assistants</p>
         
-        <div class="status">Server Ready</div>
+        <div class="status">Server Active</div>
         
         <div class="card">
-            <h2>Endpoints</h2>
+            <h2>API Endpoints</h2>
             <div class="endpoint">
                 <span class="method get">GET</span>
-                <code>/</code> - Server info
+                <code>/</code> - Server info & endpoints
             </div>
             <div class="endpoint">
                 <span class="method get">GET</span>
@@ -48,7 +58,7 @@
             </div>
             <div class="endpoint">
                 <span class="method post">POST</span>
-                <code>/messages</code> - RPC message handling
+                <code>/messages</code> - JSON-RPC message handling
             </div>
             <div class="endpoint">
                 <span class="method get">GET</span>
@@ -61,55 +71,176 @@
             <div class="tools-grid">
                 <div class="tool-card">
                     <h3>create_branch</h3>
-                    <p>Create a new GitHub branch</p>
+                    <p>Create a new GitHub branch from any base branch</p>
                 </div>
                 <div class="tool-card">
                     <h3>commit_files</h3>
-                    <p>Commit files to a branch</p>
+                    <p>Commit files to a branch with full content</p>
                 </div>
                 <div class="tool-card">
                     <h3>open_pull_request</h3>
-                    <p>Open a pull request</p>
+                    <p>Open a pull request with title and description</p>
                 </div>
                 <div class="tool-card">
                     <h3>get_pr_status</h3>
-                    <p>Get PR status and CI checks</p>
+                    <p>Get PR status, CI checks, and mergeability</p>
                 </div>
                 <div class="tool-card">
                     <h3>get_ci_result</h3>
-                    <p>Get CI result for a PR</p>
+                    <p>Get CI result with SHA and test status</p>
                 </div>
                 <div class="tool-card">
                     <h3>get_coverage_report</h3>
-                    <p>Get coverage report</p>
+                    <p>Get coverage percentage for PR</p>
                 </div>
                 <div class="tool-card">
                     <h3>run_security_scan</h3>
-                    <p>Trigger security scan</p>
+                    <p>Trigger security scan on PR</p>
                 </div>
                 <div class="tool-card">
                     <h3>merge_pull_request</h3>
-                    <p>Merge a pull request</p>
+                    <p>Merge PR with squash, merge, or rebase</p>
                 </div>
             </div>
         </div>
         
+        <div class="two-col">
+            <div class="card">
+                <h2>Quick Start</h2>
+                <pre>pip install mcp uvicorn starlette python-dotenv
+
+# Create ~/.config/mcp-gh/.env
+# GITHUB_TOKEN=ghp_xxx
+# GITHUB_OWNER=your-org
+# GITHUB_REPO=your-repo
+
+python mcp_github.py --port 8003</pre>
+            </div>
+            
+            <div class="card">
+                <h2>Test the Server</h2>
+                <pre># Health check
+curl http://localhost:8003/health
+
+# SSE stream
+curl -N http://localhost:8003/sse
+
+# JSON-RPC call
+curl -X POST http://localhost:8003/messages \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'</pre>
+            </div>
+        </div>
+        
+        <div class="card prompt-section">
+            <h2>Architect App Prompts <span class="badge">MCP Integration</span></h2>
+            
+            <div class="prompt-box">
+                <h4>Agent Prompt: GitHub Coder</h4>
+                <code>You are a GitHub MCP Coder Agent. Use the mcp-github tools (create_branch, commit_files, open_pull_request) to implement tasks.
+
+1. Call create_branch with branch_name="feature/[task-slug]" from_branch="main"
+2. For each file: call commit_files with branch_name, file_path, file_content, commit_message
+3. After commits: call open_pull_request with title and descriptive body
+4. Return prNumber and URL.
+
+Rules:
+- Always create the branch first
+- Commit files one at a time
+- Do not merge PRs</code>
+            </div>
+            
+            <div class="prompt-box">
+                <h4>Agent Prompt: GitHub QA</h4>
+                <code>You are a GitHub MCP QA Agent. Verify CI passed and coverage meets thresholds.
+
+1. Call get_pr_status with pr_number
+2. If checks incomplete, wait 60s and retry (max 10 times)
+3. If any check fails, report failures and STOP
+4. Call get_ci_result to get proof hash
+5. Call get_coverage_report. If coveragePct < 80 or null, report and STOP
+6. Output: QA_REPORT with allChecksPassed, coveragePct, verdict: APPROVED
+
+Rules:
+- Never approve PRs with failing checks
+- Never approve coverage below 80%</code>
+            </div>
+            
+            <div class="prompt-box">
+                <h4>Agent Prompt: GitHub Security</h4>
+                <code>You are a GitHub MCP Security Agent. Trigger and verify security scans.
+
+1. Call run_security_scan with pr_number
+2. Wait 2 minutes for scan to complete
+3. Poll get_ci_result until allConcluded=true
+4. Check get_pr_status for security check conclusions
+5. Output: SECURITY_REPORT with scanTriggered, securityCheckConclusion, verdict: CLEARED or BLOCKED
+
+Rules:
+- Refuse to proceed without QA_APPROVED
+- Never merge</code>
+            </div>
+            
+            <div class="prompt-box">
+                <h4>Agent Prompt: GitHub Verifier</h4>
+                <code>You are a GitHub MCP Verifier Agent. Final gatekeeper - merge only after QA and Security approval.
+
+Pre-conditions (ALL must be true):
+- QA_REPORT with verdict: APPROVED
+- SECURITY_REPORT with verdict: CLEARED
+- Same prNumber in both reports
+
+Workflow:
+1. Validate both reports exist and are approved
+2. Call get_pr_status, confirm state="open" and mergeable=true
+3. Ask user: "Confirm merge PR #N? [y/N]"
+4. On confirmation: call merge_pull_request with merge_method="squash"
+5. Output MERGE_RECEIPT with sha and verdicts
+
+Rules:
+- NEVER merge without both verdicts
+- NEVER merge if mergeable=false</code>
+            </div>
+            
+            <div class="prompt-box">
+                <h4>Full Pipeline Orchestrator</h4>
+                <code>CODER PHASE:
+- create_branch "feature/[slug]"
+- commit_files for each file
+- open_pull_request → save prNumber
+
+QA PHASE:
+- Poll get_pr_status every 60s until allPassed=true
+- Call get_coverage_report, flag if < 80%
+- Output: QA verdict APPROVED or STOP
+
+SECURITY PHASE:
+- run_security_scan
+- Wait 2 min, poll get_ci_result
+- Output: SECURITY verdict CLEARED or BLOCKED
+
+VERIFIER PHASE:
+- Final get_pr_status check
+- On confirmation: merge_pull_request
+- Output: MERGE_RECEIPT with all verdicts</code>
+            </div>
+        </div>
+        
         <div class="card">
-            <h2>Quick Start</h2>
-            <code style="display: block; background: #0d1117; padding: 16px; border-radius: 4px; overflow-x: auto;">
-# Install dependencies<br>
-pip install mcp uvicorn starlette python-dotenv<br><br>
-# Create .env file at ~/.config/mcp-gh/.env<br>
-# GITHUB_TOKEN=ghp_...<br>
-# GITHUB_OWNER=your-org<br>
-# GITHUB_REPO=your-repo<br><br>
-# Start the server<br>
-python mcp_github.py --port 8003
-            </code>
+            <h2>MCP Configuration</h2>
+            <pre>{
+  "mcp": {
+    "mcp-github": {
+      "type": "remote",
+      "url": "http://localhost:8003/sse",
+      "enabled": true
+    }
+  }
+}</pre>
         </div>
         
         <footer>
-            <p>mcp-github Server &bull; <a href="https://github.com/dexter123233/Barbarik">GitHub Repository</a></p>
+            <p>mcp-github | <a href="https://github.com/dexter123233/Barbarik">GitHub Repository</a> | <a href="https://dexter123233.github.io/Barbarik/SETUP.html">Setup Guide</a></p>
         </footer>
     </div>
 </body>
