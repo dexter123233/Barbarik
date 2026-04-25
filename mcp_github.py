@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python33
 """
 mcp_github.py - GitHub MCP Server for Lyzr/Claude/Cursor Integration
 
