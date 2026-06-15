@@ -16,15 +16,34 @@ export default function Page() {
       </blockquote>
 
       <h2 className="text-lg font-semibold mb-3">Prompt Library</h2>
+      <p className="text-sm text-zinc-500 mb-4">Deploy these on <a href="https://architect.new" className="text-blue-600 underline">Lyzr architect.new</a>. Each prompt is self-contained with input/output schemas, tool bindings, and budget caps.</p>
 
-      <div className="bg-zinc-100 rounded p-3 mb-6 text-sm font-mono overflow-x-auto">
-        <span className="text-zinc-500">prompts/</span><br />
-        ├── <a href="https://github.com/dexter123233/Barbarik/blob/main/prompts/orchestrator.md" className="text-blue-600">orchestrator.md</a>     CEO — goal decomposition &amp; dispatch<br />
-        ├── <a href="https://github.com/dexter123233/Barbarik/blob/main/prompts/dev.md" className="text-blue-600">dev.md</a>               Production — code, test, deploy<br />
-        ├── <a href="https://github.com/dexter123233/Barbarik/blob/main/prompts/scout.md" className="text-blue-600">scout.md</a>             Market intel — lead gen, competitors<br />
-        ├── <a href="https://github.com/dexter123233/Barbarik/blob/main/prompts/archer.md" className="text-blue-600">archer.md</a>            Growth — outbound, A/B, Stripe promos<br />
-        ├── <a href="https://github.com/dexter123233/Barbarik/blob/main/prompts/pulse.md" className="text-blue-600">pulse.md</a>             Support — ticket triage, escalation<br />
-        └── <a href="https://github.com/dexter123233/Barbarik/blob/main/prompts/sentinel.md" className="text-blue-600">sentinel.md</a>          Ops — P&amp;L, budget enforcement, infra
+      <div className="space-y-3 mb-8">
+        {[
+          { name: 'orchestrator.md', role: 'CEO — goal decomposition & dispatch', deps: 'entry point', budget: '$500/workstream', input: '{"goal": "string", "context": {"industry": "...", "target_revenue": 1000000}}', output: '{"plan_id": "uuid", "workstreams": [{"agent": "dev|scout|...", "task": "..."}]}', key_rules: ['Parse goal → emit parallel workstreams', 'Each workstream gets scoped API keys + budget cap', 'Human review pause if cost > $500', 'Fail-fast on agent errors'] },
+          { name: 'dev.md', role: 'Production — code, test, deploy', deps: 'none (parallel)', budget: '$10k/mo', input: '{"spec": {"repo": "...", "feature": "..."}, "guardrails": {...}}', output: '{"pr_url": "string", "test_status": "passed|failed", "deploy_status": "..."}', key_rules: ['Feature branch from main before any write', 'Write tests alongside every change', 'Never use eval/exec/rm -rf (enforced by Lyzr security)', 'Max 10 PRs/day — queue if exceeded'] },
+          { name: 'scout.md', role: 'Market intel — lead gen, competitors', deps: 'none (parallel)', budget: '$20k/mo', input: '{"target_market": "string", "sources": ["crunchbase", "linkedin"], "max_prospects": 200}', output: '{"prospects": [{name, company, confidence}], "trends": [{keyword, velocity}]}', key_rules: ['Query all sources in parallel', 'Deduplicate by company+email via vector memory', 'Store every prospect in Pinecone/Chroma', 'Max 500 API calls/day per source'] },
+          { name: 'archer.md', role: 'Growth — outbound, A/B, Stripe promos', deps: 'after scout', budget: '$50k/mo', input: '{"campaign_name": "...", "prospects": [...], "channels": ["email","linkedin","x"], "budget_cents": 50000}', output: '{"delivered": 0, "meetings_booked": 0, "variant_winner": "...", "roi_estimate": 0.0}', key_rules: ['Requires Scout prospects — do not run without', 'Rotate A/B variants, throttle losers after 50', 'Max 200 email, 50 LinkedIn, 100 X DMs/day', 'Pause all if spend > 90% of budget_cents'] },
+          { name: 'pulse.md', role: 'Support — ticket triage, escalation', deps: 'none (parallel)', budget: '$5k/mo', input: '{"tickets": [{id, subject, body, severity}], "max_auto_resolve": 50}', output: '{"resolved": 0, "escalated": [{ticket_id, github_issue_url}], "sla_breaches": 0}', key_rules: ['Vector-match past solutions — auto-reply if similarity > 0.85', 'Critical severity → immediately file GitHub issue', 'High severity with no match → GitHub issue, no ping', 'Max 50 auto-resolves per run'] },
+          { name: 'sentinel.md', role: 'Ops — P&L, budget enforcement, infra', deps: 'after all (aggregator)', budget: 'read-only', input: '{"workstreams": [{agent, status, cost_cents}], "budgets": {monthly_cents: 1500000, per_agent_caps: {...}}}', output: '{"total_spend_cents": 0, "burn_rate_daily": 0, "p_and_l": {...}, "flags": ["string"]}', key_rules: ['Runs last — aggregates all prior agent outputs', 'Flag any agent exceeding per-agent budget cap', 'Check infra health — any down service = alert', 'Append row to Google Sheets ledger', 'If spend > 80% → flag approaching_cap'] },
+        ].map((p) => (
+          <details key={p.name} className="bg-zinc-50 border border-zinc-200 rounded-lg overflow-hidden">
+            <summary className="px-4 py-3 cursor-pointer text-sm font-mono hover:bg-zinc-100 transition-colors flex items-center justify-between">
+              <span><span className="text-blue-600">{p.name}</span> <span className="text-zinc-500 font-sans text-xs">{p.role}</span></span>
+              <span className="text-[10px] text-zinc-400 font-sans">{p.deps} · {p.budget}</span>
+            </summary>
+            <div className="px-4 pb-4 text-xs space-y-2 border-t border-zinc-200 pt-3">
+              <div><span className="font-medium text-zinc-700">Input:</span> <code className="text-zinc-600">{p.input}</code></div>
+              <div><span className="font-medium text-zinc-700">Output:</span> <code className="text-zinc-600">{p.output}</code></div>
+              <div><span className="font-medium text-zinc-700">Rules:</span>
+                <ul className="list-disc pl-4 mt-1 space-y-0.5 text-zinc-500">
+                  {p.key_rules.map((r, i) => <li key={i}>{r}</li>)}
+                </ul>
+              </div>
+              <a href={`https://github.com/dexter123233/Barbarik/blob/main/prompts/${p.name}`} className="text-blue-600 underline inline-block mt-1">View full prompt →</a>
+            </div>
+          </details>
+        ))}
       </div>
 
       <h2 className="text-lg font-semibold mb-3">Architecture</h2>
