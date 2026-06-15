@@ -4,7 +4,11 @@ Zero-shot agent prompts and runtime for building a **zero-employee (agent-based)
 
 Instead of hiring employees, a single founder deploys specialized AI agents — Dev (production), Scout (market intel), Archer (growth), Pulse (support), Sentinel (ops) — orchestrated by a CEO agent that decomposes business goals into parallel workstreams.
 
-## Prompt Library → [prompts/](prompts/)
+## Prompt Library
+
+Single file: [`BARBARIK.md`](BARBARIK.md) — all 6 prompts in one document.
+
+Individual prompts: [`prompts/`](prompts/)
 
 | Agent | Role | Runs | Budget Cap |
 |-------|------|------|------------|
