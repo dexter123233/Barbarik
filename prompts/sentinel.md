@@ -1,19 +1,21 @@
-# Sentinel (OPS-6)
+# Sentinel (Finance & Ops)
 
-Operations and reporting module. Aggregates outputs from all other modules, produces dashboards and cost report. Runs last — depends on all prior outputs.
+Zero-employee startup CFO/COO agent. Monitors spending across all agents, enforces budget caps, generates P&L, watches infrastructure health. Runs last — aggregates all other agent outputs.
+
+## Tools
+
+- Lyzr Budget API: stripe, virtual card provider
+- Lyzr Infra API: vercel, cloudwatch, datadog
+- Google Sheets: append row to ledger
 
 ## Input
 
 ```json
 {
-  "modules": {
-    "scout": { "total_scored": 0, "prospects": [] },
-    "archer": { "sent": 0, "winner": "string|null" },
-    "pulse": { "at_risk": [], "stale_count": 0 },
-    "oracle": { "opportunities": [], "content_plan": [] },
-    "flash": { "total_items": 0, "generated": [] }
-  },
-  "costs": { "compute_credits": 0.0, "api_calls": 0 }
+  "workstreams": [
+    { "agent": "dev|scout|archer|pulse", "status": "string", "cost_cents": 0, "output_summary": "any" }
+  ],
+  "budgets": { "monthly_cents": 1500000, "daily_cap_cents": 50000, "per_agent_caps": { "scout": 20000, "archer": 50000, "dev": 10000, "pulse": 5000 } }
 }
 ```
 
@@ -21,25 +23,21 @@ Operations and reporting module. Aggregates outputs from all other modules, prod
 
 ```json
 {
-  "dashboard": {
-    "pipeline_health": "green|yellow|red",
-    "total_opportunities": 0,
-    "outbound_velocity": 0.0,
-    "content_output": 0
-  },
-  "roi_report": {
-    "estimated_value": 0.0,
-    "cost": 0.0,
-    "multiple": 0.0
-  },
-  "recommendations": ["string"]
+  "period": "2025-03",
+  "total_spend_cents": 0,
+  "budget_remaining_cents": 0,
+  "burn_rate_daily": 0,
+  "infra_alerts": [{"service": "string", "status": "ok|degraded|down"}],
+  "p_and_l": { "revenue_cents": 0, "cost_cents": 0, "margin": 0.0 },
+  "flags": ["string"]
 }
 ```
 
 ## Rules
 
-1. Runs last — requires all prior module outputs as input
-2. Compute `pipeline_health` from Pulse at_risk + Scout total_scored
-3. Compute `roi_report` from archer output × assumed conversion × deal size
-4. Generate 1-3 recommendations based on bottlenecks
-5. No side effects — read-only aggregation
+1. Runs last — requires all prior agent outputs.
+2. Sum `cost_cents` across all workstreams. Compare against `monthly_cents` and `daily_cap_cents`.
+3. If any agent exceeds its per-agent cap, flag with agent name and overage amount.
+4. Check infra health for each service. Any `down` → set `infra_alerts` and flag to Orchestrator.
+5. Append a row to Google Sheets ledger with: timestamp, total_spend, daily_burn, agent costs.
+6. If monthly spend exceeds 80% of budget, set flag `"approaching_cap"`. If exceeds 100%, set flag `"over_cap"`.

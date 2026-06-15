@@ -1,54 +1,34 @@
 # Barbarik
 
-This repo contains the runtime and configuration for the paper ["Barbarik: Autonomous Software Organisation"](https://arxiv.org/abs/2502.12115).
+Zero-shot agent prompts and runtime for building a **zero-employee (agent-based) startup** on Lyzr's agent infrastructure.
 
-Barbarik is a composable runtime for deploying teams of AI agents that run
-revenue operations. It provides six modules — Scout, Archer, Pulse, Oracle,
-Flash, Sentinel — that form a directed pipeline from lead ingestion to
-executive reporting.
+Instead of hiring employees, a single founder deploys specialized AI agents — Dev (production), Scout (market intel), Archer (growth), Pulse (support), Sentinel (ops) — orchestrated by a CEO agent that decomposes business goals into parallel workstreams.
 
-## Prompt Library
+## Prompt Library → [prompts/](prompts/)
 
-Zero-shot agent prompts for orchestrating the Barbarik module stack on
-architect.new — see [prompts/](prompts/).
+| Agent | Role | Runs | Budget Cap |
+|-------|------|------|------------|
+| [Orchestrator](prompts/orchestrator.md) | CEO — goal decomposition & dispatch | first | $500/workstream |
+| [Dev](prompts/dev.md) | Code, test, deploy on GitHub | parallel | $10k/mo |
+| [Scout](prompts/scout.md) | Lead gen, competitor intel | parallel | $20k/mo |
+| [Pulse](prompts/pulse.md) | Ticket triage, auto-resolve | parallel | $5k/mo |
+| [Archer](prompts/archer.md) | Multi-channel outbound, A/B | after scout | $50k/mo |
+| [Sentinel](prompts/sentinel.md) | P&L, budget enforcement, infra | last | read-only |
 
 ## Setup
 
 ```bash
 uv sync
-```
-
-```bash
 cp sample.env .env
-# Set BARBARIK_API_KEY, OPENAI_API_KEY
 ```
 
-## Running
+## The 5-Step Launch
 
-```bash
-uv run barbarik deploy \
-  barbarik.modules=scout,archer,pulse \
-  barbarik.target=revenue_ops \
-  barbarik.dry_run=False
-```
-
-```bash
-uv run barbarik deploy \
-  barbarik.modules=scout,oracle,flash,archer,pulse,sentinel \
-  barbarik.target=content_engine \
-  barbarik.dry_run=False
-```
-
-## Modules
-
-| Module | Signal | Role |
-|--------|--------|------|
-| scout | SRC-1 | Lead ingestion & scoring |
-| archer | SND-2 | Outbound delivery & A/B test |
-| pulse | MON-3 | Pipeline monitoring & escalation |
-| oracle | ANL-4 | Content intelligence & gap analysis |
-| flash | GEN-5 | Multi-format content generation |
-| sentinel | OPS-6 | Dashboards & cost reporting |
+1. **Define Micro-SaaS** — hyper-specific B2B pain point
+2. **Build Agent Swarm** — deploy prompts on Lyzr architect.new
+3. **Connect Infrastructure** — GitHub, Stripe, SendGrid via Lyzr MCP
+4. **Set Financial Guardrails** — per-agent daily caps, Sentinel monitors burn
+5. **Launch HITL** — human-in-the-loop 30-60 days, then full autonomy
 
 ## License
 

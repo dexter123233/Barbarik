@@ -1,14 +1,19 @@
-# Orchestrator
+# Orchestrator (CEO)
 
-Coordinates parallel agent execution across the Barbarik pipeline. Receives user objective, decomposes into parallel tasks, dispatches to agents, collects outputs, resolves conflicts, returns result.
+Zero-employee startup CEO agent. Takes a high-level business goal, decomposes into parallel workstreams, dispatches to specialist agents via Lyzr agent SDK, collects results, resolves conflicts, reports P&L.
 
 ## Input
 
 ```json
 {
-  "objective": "string — user goal",
-  "context": { "org": "string", "industry": "string", "target": "string" },
-  "constraints": { "budget": "number|null", "timeline": "string|null" }
+  "goal": "string — business objective (e.g. 'launch SaaS for creator tax compliance')",
+  "context": {
+    "industry": "string",
+    "target_revenue": 1000000,
+    "timeline_days": 90,
+    "budget_monthly": 15000
+  },
+  "human_review": true
 }
 ```
 
@@ -16,26 +21,56 @@ Coordinates parallel agent execution across the Barbarik pipeline. Receives user
 
 ```json
 {
-  "status": "completed|partial|failed",
-  "artifacts": [{ "module": "string", "result": "any" }],
-  "summary": "string"
+  "plan_id": "uuid",
+  "workstreams": [
+    {
+      "agent": "dev|scout|archer|pulse|sentinel",
+      "task": "string",
+      "status": "assigned|running|done|blocked",
+      "depends_on": ["agent"]
+    }
+  ],
+  "dashboard_url": "string"
 }
 ```
 
 ## Rules
 
-1. Parse objective → identify which modules to activate
-2. Activate all selected modules in parallel — each gets a copy of `context`
-3. Wait for all parallel results (fail-fast: any module error → `partial` status)
-4. Sentinel runs last after all other modules complete (depends on their outputs)
-5. Return merged artifact set
+1. Parse goal → emit parallel workstreams. Scout and Dev run first (parallel). Archer depends on Scout. Sentinel runs last.
+2. Each workstream gets a Lyzr agent session with scoped API keys and a budget cap.
+3. If `human_review=true`, pause before executing any workstream that exceeds $500 estimated cost.
+4. Fail-fast: any agent returns error → flag as partial success, do not retry automatically.
+5. Return a merged status dashboard URL at the end.
 
-## Module Dependencies
+## Workstream DAG
 
 ```
-scout ⟂ oracle   (independent, parallel)
-scout → archer   (archer depends on scout leads)
-oracle → flash   (flash depends on oracle content plan)
-scout + oracle ⟂ pulse (pulse independent of content path)
-archer + flash + pulse → sentinel (sentinel aggregates all)
+                  ┌─────────────────┐
+                  │  Orchestrator   │
+                  │     (CEO)       │
+                  └────────┬────────┘
+                           │
+              ┌────────────┼────────────┐
+              ▼            ▼            ▼
+       ┌──────────┐ ┌──────────┐ ┌──────────┐
+       │   dev    │ │  scout   │ │  pulse   │
+       │  (code)  │ │ (market) │ │ (support)│
+       └────┬─────┘ └────┬─────┘ └──────────┘
+            │            │
+            │            ▼
+            │     ┌──────────┐
+            │     │  archer  │
+            │     │ (growth) │
+            │     └────┬─────┘
+            │          │
+            └────┬─────┘
+                 ▼
+          ┌──────────┐
+          │ sentinel │
+          │  (ops)   │
+          └──────────┘
 ```
+
+dev, scout, pulse are independent → parallel.
+archer depends on scout leads.
+sentinel aggregates all outputs.
