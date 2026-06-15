@@ -2,17 +2,21 @@
 
 This repo contains the runtime and configuration for the paper ["Barbarik: Autonomous Software Organisation"](https://arxiv.org/abs/2502.12115).
 
-> Barbarik is a composable runtime for deploying teams of AI agents that run revenue operations. It provides six modules — Scout, Archer, Pulse, Oracle, Flash, Sentinel — that form a directed pipeline from lead ingestion to executive reporting.
+Barbarik is a composable runtime for deploying teams of AI agents that run
+revenue operations. It provides six modules — Scout, Archer, Pulse, Oracle,
+Flash, Sentinel — that form a directed pipeline from lead ingestion to
+executive reporting.
+
+## Prompt Library
+
+Zero-shot agent prompts for orchestrating the Barbarik module stack on
+architect.new — see [prompts/](prompts/).
 
 ## Setup
-
-### Requirements
 
 ```bash
 uv sync
 ```
-
-### Environment
 
 ```bash
 cp sample.env .env
@@ -21,8 +25,6 @@ cp sample.env .env
 
 ## Running
 
-### Deploy default pipeline
-
 ```bash
 uv run barbarik deploy \
   barbarik.modules=scout,archer,pulse \
@@ -30,29 +32,11 @@ uv run barbarik deploy \
   barbarik.dry_run=False
 ```
 
-### Deploy with all modules
-
 ```bash
 uv run barbarik deploy \
   barbarik.modules=scout,oracle,flash,archer,pulse,sentinel \
   barbarik.target=content_engine \
   barbarik.dry_run=False
-```
-
-### Run single module in isolation
-
-```bash
-uv run barbarik modules.scout \
-  barbarik.scout.sources=crunchbase,linkedin \
-  barbarik.scout.max_prospects=200
-```
-
-### Observe pipeline logs
-
-```bash
-uv run barbarik observe \
-  barbarik.interval=60 \
-  barbarik.format=json
 ```
 
 ## Modules
